@@ -1,6 +1,5 @@
 package com.algaworks.algamoney.api.resource;
 
-import java.util.List;
 import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -15,36 +14,31 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.algaworks.algamoney.api.event.RecursoCriadoEvent;
-import com.algaworks.algamoney.api.model.Categoria;
-import com.algaworks.algamoney.api.repository.CategoriaRepository;
+import com.algaworks.algamoney.api.model.Pessoa;
+import com.algaworks.algamoney.api.repository.PessoaRepository;
 
 @RestController
-@RequestMapping("/categorias")
-public class CategoriaResource {
+@RequestMapping("/pessoas")
+public class PessoaResource {
 
   @Autowired
-  private CategoriaRepository repository;
+  private PessoaRepository repository;
 
   @Autowired
   private ApplicationEventPublisher publisher;
 
-  @GetMapping
-  public List<Categoria> listar() {
-    return repository.findAll();
-  }
-
   @PostMapping
-  public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria,
+  public ResponseEntity<Pessoa> criar(@Valid @RequestBody Pessoa pessoa,
       HttpServletResponse response) {
-    Categoria categoriaSalva = repository.save(categoria);
-    publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getCodigo()));
-    return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
+    Pessoa pessoaSalva = repository.save(pessoa);
+    publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getCodigo()));
+    return ResponseEntity.status(HttpStatus.CREATED).body(pessoaSalva);
   }
 
   @GetMapping("/{codigo}")
-  public ResponseEntity<Categoria> buscarPeloCodigo(@PathVariable Long codigo) {
-    Optional<Categoria> categoria = repository.findById(codigo);
-    return categoria.isPresent() ? ResponseEntity.ok(categoria.get())
+  public ResponseEntity<Pessoa> buscarPeloCodigo(@PathVariable Long codigo) {
+    Optional<Pessoa> pessoa = repository.findById(codigo);
+    return pessoa.isPresent() ? ResponseEntity.ok(pessoa.get())
         : ResponseEntity.notFound().build();
   }
 }
