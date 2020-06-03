@@ -4,6 +4,9 @@ spring:
   output:
     ansi:
       enabled: ALWAYS
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
   jpa:
     database: MYSQL
     show-sql: true
