@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: Algamoney-API
+  output:
+    ansi:
+      enabled: ALWAYS
+  jpa:
+    database: MYSQL
+    show-sql: true
+  datasource:
+    url: jdbc:mysql://localhost/algamoneyapi?createDatabaseIfNotExist=true&useSSL=false
+    username: root
+    password: password
+
