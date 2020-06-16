@@ -1,7 +1,10 @@
 package com.algaworks.algamoney.api.handler;
 
+import com.algaworks.algamoney.api.service.exception.InactiveOrNonExistentPersonException;
 import lombok.Builder;
 import lombok.Data;
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -36,9 +39,26 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
         String devMessage = ex.toString();
 
         List<Error> errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
+        return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
 
+    @ExceptionHandler({ConstraintViolationException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
+        String userMessage = messageSource.getMessage("resource.not-supported-operation", null, LocaleContextHolder.getLocale());
+        String devMessage = ExceptionUtils.getRootCauseMessage(ex);
 
+        List<Error> errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler({InactiveOrNonExistentPersonException.class})
+    public ResponseEntity<Object> handleInactiveOrNonExistentPersonException(InactiveOrNonExistentPersonException ex) {
+        String userMessage = messageSource.getMessage("person.inactive-or-non-existent", null, LocaleContextHolder.getLocale());
+        String devMessage = ExceptionUtils.getRootCauseMessage(ex);
+
+        List<Error> errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
+        return ResponseEntity.badRequest().body(errors);
     }
 
     @Override
@@ -47,8 +67,6 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
         String devMessage = ex.getCause().toString();
 
         List<Error> errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
-
-
         return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
     }
 

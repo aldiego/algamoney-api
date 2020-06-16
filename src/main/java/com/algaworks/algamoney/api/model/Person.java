@@ -1,5 +1,6 @@
 package com.algaworks.algamoney.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -31,4 +32,8 @@ public class Person  {
 
     @NotNull
     private Boolean active;
+
+    @JsonIgnore
+    @Transient
+    public boolean isInactive(){return !active;}
 }

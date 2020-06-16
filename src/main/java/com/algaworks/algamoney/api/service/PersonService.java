@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -18,24 +19,40 @@ public class PersonService {
     private PersonRepository repository;
 
     public Person update(Long id, Person toBeUpdate) {
-        Person savedPerson = getPerson(id);
+        Person savedPerson = findBy(id);
         BeanUtils.copyProperties(toBeUpdate, savedPerson, "id");
 
         return repository.save(toBeUpdate);
     }
 
     public Person updateActive(Long id, Boolean active) {
-        Person savedPerson = getPerson(id);
+        Person savedPerson = findBy(id);
         savedPerson.setActive(active);
 
         return repository.save(savedPerson);
     }
 
-    private Person getPerson(Long id) {
-        Optional<Person> savedPerson = repository.findById(id);
+    public Person findBy(Long id) {
+        Optional<Person> savedPerson = findOptionalBy(id);
         if (savedPerson.isEmpty()) {
             throw new EmptyResultDataAccessException(1);
         }
         return savedPerson.get();
+    }
+
+    public Optional<Person> findOptionalBy(Long id) {
+        return repository.findById(id);
+    }
+
+    public List<Person> findAll() {
+        return repository.findAll();
+    }
+
+    public Person save(Person person) {
+        return repository.save(person);
+    }
+
+    public void deleteById(Long id) {
+        repository.deleteById(id);
     }
 }
