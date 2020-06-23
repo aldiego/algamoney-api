@@ -35,50 +35,50 @@ public class AlgamoneyExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler({EmptyResultDataAccessException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex, WebRequest request) {
-        String userMessage = messageSource.getMessage("resource.not-found", null, LocaleContextHolder.getLocale());
-        String devMessage = ex.toString();
+        var userMessage = messageSource.getMessage("resource.not-found", null, LocaleContextHolder.getLocale());
+        var devMessage = ex.toString();
 
-        List<Error> errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
+        var errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
     @ExceptionHandler({ConstraintViolationException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleConstraintViolationException(ConstraintViolationException ex, WebRequest request) {
-        String userMessage = messageSource.getMessage("resource.not-supported-operation", null, LocaleContextHolder.getLocale());
-        String devMessage = ExceptionUtils.getRootCauseMessage(ex);
+        var userMessage = messageSource.getMessage("resource.not-supported-operation", null, LocaleContextHolder.getLocale());
+        var devMessage = ExceptionUtils.getRootCauseMessage(ex);
 
-        List<Error> errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
+        var errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
         return handleExceptionInternal(ex, errors, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
     @ExceptionHandler({InactiveOrNonExistentPersonException.class})
     public ResponseEntity<Object> handleInactiveOrNonExistentPersonException(InactiveOrNonExistentPersonException ex) {
-        String userMessage = messageSource.getMessage("person.inactive-or-non-existent", null, LocaleContextHolder.getLocale());
-        String devMessage = ExceptionUtils.getRootCauseMessage(ex);
+        var userMessage = messageSource.getMessage("person.inactive-or-non-existent", null, LocaleContextHolder.getLocale());
+        var devMessage = ExceptionUtils.getRootCauseMessage(ex);
 
-        List<Error> errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
+        var errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
         return ResponseEntity.badRequest().body(errors);
     }
 
     @Override
     protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        String userMessage = messageSource.getMessage("invalid.message", null, LocaleContextHolder.getLocale());
-        String devMessage = ex.getCause().toString();
+        var userMessage = messageSource.getMessage("invalid.message", null, LocaleContextHolder.getLocale());
+        var devMessage = ex.getCause().toString();
 
-        List<Error> errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
+        var errors = createErrorList(Error.builder().devMessage(devMessage).userMessage(userMessage).build());
         return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
     }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        List<Error> errors = createErrorList(ex.getBindingResult());
+        var errors = createErrorList(ex.getBindingResult());
 
         return handleExceptionInternal(ex, errors, headers, HttpStatus.BAD_REQUEST, request);
     }
 
     private List<Error> createErrorList(BindingResult bindingResult) {
-        List<Error> errors = new ArrayList<>();
+        var errors = new ArrayList<Error>();
 
         for (FieldError fieldError : bindingResult.getFieldErrors()) {
             String userMessage = messageSource.getMessage(fieldError, LocaleContextHolder.getLocale());

@@ -1,6 +1,5 @@
 package com.algaworks.algamoney.api.event;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -13,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 @ToString
 public class ResourceCreatedEvent extends ApplicationEvent {
 
-    private HttpServletResponse response;
-    private Long id;
+    private final HttpServletResponse response;
+    private final Long id;
 
     public ResourceCreatedEvent(Object source, HttpServletResponse response, Long id) {
         super(source);

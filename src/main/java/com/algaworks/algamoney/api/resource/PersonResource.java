@@ -30,7 +30,7 @@ public class PersonResource {
 
     @PostMapping
     public ResponseEntity<Person> create(@Valid @RequestBody Person person, HttpServletResponse response) {
-        Person personSaved = personService.save(person);
+        var personSaved = personService.save(person);
         publisher.publishEvent(new ResourceCreatedEvent(this, response, personSaved.getId()));
         return ResponseEntity.status(HttpStatus.CREATED).body(personSaved);
     }
@@ -48,7 +48,7 @@ public class PersonResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Person> update(@PathVariable Long id, @Valid @RequestBody Person person, HttpServletResponse response) {
-        Person updated = personService.update(id, person);
+        var updated = personService.update(id, person);
 
         publisher.publishEvent(new ResourceUpdateEvent(this, response, updated.getId()));
         return ResponseEntity.ok(updated);
@@ -58,7 +58,7 @@ public class PersonResource {
     @PutMapping("/{id}/active")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable Long id, @RequestBody Boolean active, HttpServletResponse response) {
-        Person updated = personService.updateActive(id, active);
+        var updated = personService.updateActive(id, active);
 
         publisher.publishEvent(new ResourceUpdateEvent(this, response, updated.getId()));
 

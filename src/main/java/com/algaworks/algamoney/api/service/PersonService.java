@@ -19,21 +19,21 @@ public class PersonService {
     private PersonRepository repository;
 
     public Person update(Long id, Person toBeUpdate) {
-        Person savedPerson = findBy(id);
+        var savedPerson = findBy(id);
         BeanUtils.copyProperties(toBeUpdate, savedPerson, "id");
 
         return repository.save(toBeUpdate);
     }
 
     public Person updateActive(Long id, Boolean active) {
-        Person savedPerson = findBy(id);
+        var savedPerson = findBy(id);
         savedPerson.setActive(active);
 
         return repository.save(savedPerson);
     }
 
     public Person findBy(Long id) {
-        Optional<Person> savedPerson = findOptionalBy(id);
+        var savedPerson = findOptionalBy(id);
         if (savedPerson.isEmpty()) {
             throw new EmptyResultDataAccessException(1);
         }

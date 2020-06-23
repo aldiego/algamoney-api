@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 @ToString
 public class ResourceUpdateEvent extends ApplicationEvent {
 
-    private HttpServletResponse response;
-    private Long id;
+    private final HttpServletResponse response;
+    private final Long id;
 
     public ResourceUpdateEvent(Object source, HttpServletResponse response, Long id) {
         super(source);

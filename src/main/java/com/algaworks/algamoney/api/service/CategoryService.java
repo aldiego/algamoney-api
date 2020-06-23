@@ -9,7 +9,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -19,7 +18,7 @@ public class CategoryService {
     private CategoryRepository repository;
 
     public Category update(Long id, Category toBeUpdate) {
-        Category saved = findBy(id);
+        var saved = findBy(id);
         BeanUtils.copyProperties(toBeUpdate, saved, "id");
 
         return repository.save(toBeUpdate);
@@ -31,7 +30,7 @@ public class CategoryService {
 
 
     public Category findBy(Long id) {
-        Optional<Category> saved = repository.findById(id);
+        var saved = repository.findById(id);
         if (saved.isEmpty()) {
             throw new EmptyResultDataAccessException(1);
         }
@@ -39,7 +38,7 @@ public class CategoryService {
     }
 
     public List<Category> findAll() {
-        List<Category> all = repository.findAll();
+        var all = repository.findAll();
         if (all.isEmpty()) {
             throw new EmptyResultDataAccessException(1);
         }

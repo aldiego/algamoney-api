@@ -2,11 +2,9 @@ package com.algaworks.algamoney.api.resource;
 
 import com.algaworks.algamoney.api.event.ResourceCreatedEvent;
 import com.algaworks.algamoney.api.event.ResourceUpdateEvent;
-import com.algaworks.algamoney.api.model.Category;
 import com.algaworks.algamoney.api.model.Entry;
 import com.algaworks.algamoney.api.repository.filter.EntryFilter;
 import com.algaworks.algamoney.api.service.EntryService;
-import com.algaworks.algamoney.api.service.exception.InactiveOrNonExistentPersonException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
@@ -17,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/entries")
@@ -35,7 +32,7 @@ public class EntryResource {
 
     @PostMapping
     public ResponseEntity<Entry> create(@Valid @RequestBody Entry person, HttpServletResponse response) {
-        Entry saved = service.save(person);
+        var saved = service.save(person);
         publisher.publishEvent(new ResourceCreatedEvent(this, response, saved.getId()));
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
@@ -53,13 +50,12 @@ public class EntryResource {
 
     @PutMapping("/{id}")
     public ResponseEntity<Entry> update(@PathVariable Long id, @Valid @RequestBody Entry entry, HttpServletResponse response) {
-        Entry updated = service.update(id, entry);
+        var updated = service.update(id, entry);
 
         publisher.publishEvent(new ResourceUpdateEvent(this, response, updated.getId()));
         return ResponseEntity.ok(updated);
 
     }
-
 
 
 }
