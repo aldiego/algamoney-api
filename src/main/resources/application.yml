@@ -15,4 +15,5 @@ spring:
     url: jdbc:mysql://localhost/algamoneyapi?createDatabaseIfNotExist=true&allowPublicKeyRetrieval=true&useSSL=false
     username: root
     password: password
-
+  main:
+    allow-bean-definition-overriding: true

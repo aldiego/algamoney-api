@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,11 +27,13 @@ public class EntryResource {
     private EntryService service;
 
     @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
     public Page<Entry> search(EntryFilter filter, Pageable pageable) {
         return service.search(filter, pageable);
     }
 
     @PostMapping
+    @PreAuthorize("hasAuthority('ROLE_CREATE_ENTRY') and #oauth2.hasScope('write')")
     public ResponseEntity<Entry> create(@Valid @RequestBody Entry person, HttpServletResponse response) {
         var saved = service.save(person);
         publisher.publishEvent(new ResourceCreatedEvent(this, response, saved.getId()));
@@ -38,17 +41,20 @@ public class EntryResource {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
     public ResponseEntity<?> findBy(@PathVariable Long id) {
         return ResponseEntity.ok(service.findBy(id));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasAuthority('ROLE_REMOVE_ENTRY') and #oauth2.hasScope('write')")
     public void remove(@PathVariable Long id) {
         service.deleteById(id);
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CREATE_ENTRY') and #oauth2.hasScope('write')")
     public ResponseEntity<Entry> update(@PathVariable Long id, @Valid @RequestBody Entry entry, HttpServletResponse response) {
         var updated = service.update(id, entry);
 
