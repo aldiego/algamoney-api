@@ -1,3 +1,9 @@
+spring:
+  datasource:
+    url: {JDBC_DATABASE_URL}
+    username: {JDBC_DATABASE_USERNAME}
+    password: {JDBC_DATABASE_PASSWORD}
 algamoney:
   security:
     enable-https: true
+  permitted-origin: http://algamoney-ui.heroku:8000
