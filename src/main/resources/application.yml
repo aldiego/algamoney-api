@@ -17,3 +17,5 @@ spring:
     password: password
   main:
     allow-bean-definition-overriding: true
+algamoney:
+  permitted-origin: http://localhost:8000

@@ -1,8 +1,11 @@
 package com.algaworks.algamoney.api.repository.entry;
 
+import com.algaworks.algamoney.api.model.Category_;
 import com.algaworks.algamoney.api.model.Entry;
 import com.algaworks.algamoney.api.model.Entry_;
+import com.algaworks.algamoney.api.model.Person_;
 import com.algaworks.algamoney.api.repository.filter.EntryFilter;
+import com.algaworks.algamoney.api.repository.projection.EntryResume;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +41,28 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery {
         return new PageImpl<>(query.getResultList(), pageable, total(entryFilter));
     }
 
+    @Override
+    public Page<EntryResume> resume(EntryFilter entryFilter, Pageable pageable) {
+        var builder = manager.getCriteriaBuilder();
+        var criteria = builder.createQuery(EntryResume.class);
+        var root = criteria.from(Entry.class);
+
+        criteria.select(builder.construct(EntryResume.class,
+                root.get(Entry_.id), root.get(Entry_.description),
+                root.get(Entry_.dueDate), root.get(Entry_.paymentDate),
+                root.get(Entry_.value), root.get(Entry_.type),
+                root.get(Entry_.category).get(Category_.name),
+                root.get(Entry_.person).get(Person_.name)));
+
+        var predicates = createRestriction(entryFilter, builder, root);
+        criteria.where(predicates);
+
+        var query = manager.createQuery(criteria);
+        addPageRestriction(query, pageable);
+
+        return new PageImpl<>(query.getResultList(), pageable, total(entryFilter));
+    }
+
 
     private Predicate[] createRestriction(EntryFilter entryFilter, CriteriaBuilder builder, Root<Entry> root) {
         var predicates = new ArrayList<>();
@@ -60,7 +85,7 @@ public class EntryRepositoryImpl implements EntryRepositoryQuery {
     }
 
 
-    private void addPageRestriction(TypedQuery<Entry> query, Pageable pageable) {
+    private void addPageRestriction(TypedQuery<?> query, Pageable pageable) {
         int actualPage = pageable.getPageNumber();
         int totalRegistriesPerPage = pageable.getPageSize();
         int firstRegistryOfPage = actualPage * totalRegistriesPerPage;

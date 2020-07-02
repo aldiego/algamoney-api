@@ -4,6 +4,7 @@ import com.algaworks.algamoney.api.event.ResourceCreatedEvent;
 import com.algaworks.algamoney.api.event.ResourceUpdateEvent;
 import com.algaworks.algamoney.api.model.Entry;
 import com.algaworks.algamoney.api.repository.filter.EntryFilter;
+import com.algaworks.algamoney.api.repository.projection.EntryResume;
 import com.algaworks.algamoney.api.service.EntryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -30,6 +31,12 @@ public class EntryResource {
     @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
     public Page<Entry> search(EntryFilter filter, Pageable pageable) {
         return service.search(filter, pageable);
+    }
+
+    @GetMapping(params = "resume")
+    @PreAuthorize("hasAuthority('ROLE_SEARCH_ENTRY') and #oauth2.hasScope('read')")
+    public Page<EntryResume> resume(EntryFilter filter, Pageable pageable) {
+        return service.resume(filter, pageable);
     }
 
     @PostMapping
@@ -62,6 +69,4 @@ public class EntryResource {
         return ResponseEntity.ok(updated);
 
     }
-
-
 }

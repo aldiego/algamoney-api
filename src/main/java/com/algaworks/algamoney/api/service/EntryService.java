@@ -3,6 +3,7 @@ package com.algaworks.algamoney.api.service;
 import com.algaworks.algamoney.api.model.Entry;
 import com.algaworks.algamoney.api.repository.EntryRepository;
 import com.algaworks.algamoney.api.repository.filter.EntryFilter;
+import com.algaworks.algamoney.api.repository.projection.EntryResume;
 import com.algaworks.algamoney.api.service.exception.InactiveOrNonExistentPersonException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -52,5 +53,9 @@ public class EntryService {
 
     public void deleteById(Long id) {
         repository.deleteById(id);
+    }
+
+    public Page<EntryResume> resume(EntryFilter filter, Pageable pageable) {
+        return repository.resume(filter, pageable);
     }
 }
