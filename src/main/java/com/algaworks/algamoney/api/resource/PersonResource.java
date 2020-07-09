@@ -6,6 +6,8 @@ import com.algaworks.algamoney.api.model.Person;
 import com.algaworks.algamoney.api.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,12 +26,6 @@ public class PersonResource {
     @Autowired
     private PersonService personService;
 
-    @GetMapping
-    @PreAuthorize("hasAuthority('ROLE_SEARCH_PERSON') and #oauth2.hasScope('read')")
-    public List<Person> list() {
-        return personService.findAll();
-    }
-
     @PostMapping
     @PreAuthorize("hasAuthority('ROLE_CREATE_PERSON') and #oauth2.hasScope('write')")
     public ResponseEntity<Person> create(@Valid @RequestBody Person person, HttpServletResponse response) {
@@ -42,6 +38,13 @@ public class PersonResource {
     @PreAuthorize("hasAuthority('ROLE_SEARCH_PERSON') and #oauth2.hasScope('read')")
     public ResponseEntity<?> findBy(@PathVariable Long id) {
         return ResponseEntity.ok(personService.findBy(id));
+    }
+
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('ROLE_SEARCH_PERSON') and #oauth2.hasScope('read')")
+    public Page<Person> search(@RequestParam(required = false, defaultValue = "%") String name, Pageable pageable) {
+        return personService.findByNameContaining(name, pageable);
     }
 
     @DeleteMapping("/{id}")

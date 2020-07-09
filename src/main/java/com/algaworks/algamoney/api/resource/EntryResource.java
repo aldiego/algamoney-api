@@ -67,6 +67,16 @@ public class EntryResource {
 
         publisher.publishEvent(new ResourceUpdateEvent(this, response, updated.getId()));
         return ResponseEntity.ok(updated);
+    }
 
+    @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('ROLE_CREATE_ENTRY') and #oauth2.hasScope('write')")
+    public ResponseEntity<Entry> update(@PathVariable Long id, @Valid @RequestBody Entry entry) {
+        try {
+            var entrySaved = service.update(id, entry);
+            return ResponseEntity.ok(entrySaved);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

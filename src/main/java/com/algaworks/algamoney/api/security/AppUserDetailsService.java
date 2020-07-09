@@ -23,7 +23,7 @@ public class AppUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         var optionalUser = userRepository.findByEmail(email);
         var user = optionalUser.orElseThrow(() -> new UsernameNotFoundException("Email and/or password do(es)n't match."));
-        return new org.springframework.security.core.userdetails.User(email, user.getPassword(), getPermissions(user));
+        return new SystemUser(user, getPermissions(user));
     }
 
     private Collection<? extends GrantedAuthority> getPermissions(User user) {
